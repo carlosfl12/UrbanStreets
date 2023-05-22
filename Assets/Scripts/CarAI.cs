@@ -14,16 +14,23 @@ public class CarAI : MonoBehaviour
     public float maxMotorTorque = 80f;
     public float maxBrakeTorque = 150f;
     public float currentSpeed;
+    public float turnSpeed = 5;
     public float maxSpeed = 100f;
-    public bool isBraking = false;
-    public bool isTurning = false;
     public Material[] colors;
+
+    [Header("Braking Options")]
+    public bool isBraking = false;
+    public float approachAngleThreshold = 10f;
+    public bool isApproachingCurve = false;
 
     [Header("Sensors")]
     public float sensorLength = 3f;
     public Vector3 frontSensorPosition = new Vector3(0f, 0.2f, 0.5f);
     public float frontSideSensorPosition = 0.2f;
     public float frontSensorAngle = 30f;
+    public bool isTurning = false;
+    public float targetSteerAngle = 0;
+
 
     private void Start()
     {
@@ -41,77 +48,81 @@ public class CarAI : MonoBehaviour
     }
 
     private void FixedUpdate() {
+        Sensors();
         Drive();
-        if (!isOvertaking) {
-            ApplySteer(nodes[currentNode].position);
-        }
+        ApplySteer();
         ChangeWaypoint();
         Braking();
-        Sensors();
+        LerpToSteerAngle();
     }
 
     public void Sensors() {
         RaycastHit hit;
         Vector3 sensorStarPose = transform.position + frontSensorPosition;
-        sensorStarPose.z += sensorLength;
-        
-        // Sensor central
-        if (Physics.Raycast(sensorStarPose, transform.forward, out hit, sensorLength)) {
-            Debug.DrawLine(sensorStarPose, hit.point);
-            Debug.Log(hit.rigidbody);
-
-            if (hit.rigidbody) {
-                Turn(hit.rigidbody.position + new Vector3(10f, 0f, 0f));
-            }
-        }
+        sensorStarPose += transform.forward * frontSensorPosition.z;
+        sensorStarPose += transform.up * frontSensorPosition.y;
+        float avoidMultiplier = 0;
+        isTurning = false;
 
         //Sensores derecha
-        sensorStarPose.x += frontSideSensorPosition;
+        sensorStarPose += transform.right * frontSideSensorPosition;
         if (Physics.Raycast(sensorStarPose, transform.forward, out hit, sensorLength)) {
-            Debug.DrawLine(sensorStarPose, hit.point);
-
-            if (hit.rigidbody && !isTurning) {
-                
+            if (hit.rigidbody) {
+                Debug.DrawLine(sensorStarPose, hit.point);
+                isTurning = true;
+                avoidMultiplier -= 1f;
             }
         }
 
-        if (Physics.Raycast(sensorStarPose, Quaternion.AngleAxis(frontSensorAngle, transform.up) * transform.forward, out hit, sensorLength)) {
-            Debug.DrawLine(sensorStarPose, hit.point);
+        else if (Physics.Raycast(sensorStarPose, Quaternion.AngleAxis(frontSensorAngle, transform.up) * transform.forward, out hit, sensorLength)) {
             if (hit.rigidbody) {
-                StopTurning();
+                Debug.DrawLine(sensorStarPose, hit.point);
+                isTurning = true;
+                avoidMultiplier -= 0.5f;
             }
         }
 
         // Sensores izquierda
-        sensorStarPose.x -= 2 * frontSideSensorPosition;
+        sensorStarPose -= transform.right * frontSideSensorPosition * 2;
         if (Physics.Raycast(sensorStarPose, transform.forward, out hit, sensorLength)) {
-            Debug.DrawLine(sensorStarPose, hit.point);
-
-            if (hit.rigidbody && !isTurning) {
-                // Turn(hit.rigidbody.position + new Vector3(-10f, 0f, 0f));
-            }
-        }
-
-        if (Physics.Raycast(sensorStarPose, Quaternion.AngleAxis(-frontSensorAngle, transform.up) * transform.forward, out hit, sensorLength)) {
-            Debug.DrawLine(sensorStarPose, hit.point);
             if (hit.rigidbody) {
-                StopTurning();
+                Debug.DrawLine(sensorStarPose, hit.point);
+                isTurning = true;
+                avoidMultiplier += 1f;
             }
+        }
+
+        else if (Physics.Raycast(sensorStarPose, Quaternion.AngleAxis(-frontSensorAngle, transform.up) * transform.forward, out hit, sensorLength)) {
+            if (hit.rigidbody) {
+                Debug.DrawLine(sensorStarPose, hit.point);
+                isTurning = true;
+                avoidMultiplier += 0.5f;
+            }
+        }
+
+        // Sensor central
+        if (avoidMultiplier == 0) {
+            if (Physics.Raycast(sensorStarPose, transform.forward, out hit, sensorLength)) {
+                if (hit.rigidbody) {
+                    Debug.DrawLine(sensorStarPose, hit.point);
+                    isTurning = true;
+                    if (hit.normal.x < 0) {
+                        avoidMultiplier = -1;
+                    } else {
+                        avoidMultiplier = 1;
+                    }
+                }
+            }
+        }
+       
+        if (isTurning) {
+            targetSteerAngle = maxSteerAngle * avoidMultiplier;
         }
     }
 
-    public void Turn(Vector3 pos) {
-        Debug.Log("Deberia girar derecha o izquierda");
-        isOvertaking = true;
-        isTurning = true;
-        ApplySteer(pos);
-
-    }
-
-    public void StopTurning() {
-        Debug.Log("Deberia dejar de girar");
-        isOvertaking = false;
-        isTurning = false;
+    public void LerpToSteerAngle() {
+        wheelFrontLeft.steerAngle = Mathf.Lerp(wheelFrontLeft.steerAngle, targetSteerAngle, Time.deltaTime * turnSpeed);
+        wheelFrontRight.steerAngle = Mathf.Lerp(wheelFrontRight.steerAngle, targetSteerAngle, Time.deltaTime * turnSpeed);
     }
 
     public void Drive() {
@@ -125,15 +136,31 @@ public class CarAI : MonoBehaviour
         }
     }
 
-    void ApplySteer(Vector3 pos) {
-        // Vector3 relativeVector = transform.InverseTransformPoint(nodes[currentNode].position);
-        Vector3 relativeVector = transform.InverseTransformPoint(pos);
+    void ApplySteer() {
+        if (isTurning) {
+            return;
+        }
+        Vector3 relativeVector = transform.InverseTransformPoint(nodes[currentNode].position);
         float newSteer = (relativeVector.x / relativeVector.magnitude) * maxSteerAngle;
-        wheelFrontLeft.steerAngle = newSteer;
-        wheelFrontRight.steerAngle = newSteer;
+        targetSteerAngle = newSteer;
     }
 
     void ChangeWaypoint() {
+        // Vector3 currentWaypointDir = nodes[currentNode].position - transform.position;
+        // Vector3 nextWaypointDir = nodes[currentNode + 1].position - transform.position;
+
+        // float angle = Vector3.Angle(currentWaypointDir, nextWaypointDir);
+        // Debug.Log(angle);
+
+        // if (angle > approachAngleThreshold)
+        // {
+        //     isBraking = true;
+        // }
+        // else
+        // {
+        //     isBraking = false;
+        // }
+
         if (Vector3.Distance(transform.position, nodes[currentNode].position) < 3f) {
             currentNode++;
         }
