@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18385258, g: 0.22906367, b: 0.30350074, a: 1}
+  m_IndirectSpecularColor: {r: 0.18385214, g: 0.22906303, b: 0.3035, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -263,7 +263,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 296668092}
   m_LocalRotation: {x: -0, y: 0.70710623, z: -0, w: 0.7071074}
-  m_LocalPosition: {x: 93.57964, y: 5, z: 75.12972}
+  m_LocalPosition: {x: 89.07964, y: 5, z: 72.879715}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -281,8 +281,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 15.8498, y: 7.0539665, z: 3}
-  m_Center: {x: 0.17168808, y: 1.2, z: 0}
+  m_Size: {x: 15.8498, y: 7.0539665, z: 5.005092}
+  m_Center: {x: 0.17168808, y: 1.1999998, z: -1.0025468}
 --- !u!1 &313834100 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 3979a3baba606954d84ace5c64a860f7, type: 3}
@@ -702,11 +702,15 @@ PrefabInstance:
       objectReference: {fileID: 2139942266}
     - target: {fileID: 3469287838635522322, guid: 4b27026fd16b4b34ba2ea0a7f02b656e, type: 3}
       propertyPath: sensorLength
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3469287838635522322, guid: 4b27026fd16b4b34ba2ea0a7f02b656e, type: 3}
       propertyPath: maxMotorTorque
       value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 3469287838635522322, guid: 4b27026fd16b4b34ba2ea0a7f02b656e, type: 3}
+      propertyPath: frontSensorPosition.y
+      value: 0.63
       objectReference: {fileID: 0}
     - target: {fileID: 3469287838635522322, guid: 4b27026fd16b4b34ba2ea0a7f02b656e, type: 3}
       propertyPath: approachAngleThreshold
@@ -830,7 +834,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5018151057518641077, guid: 4b27026fd16b4b34ba2ea0a7f02b656e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 108.21521
+      value: 103.21521
       objectReference: {fileID: 0}
     - target: {fileID: 5018151057518641077, guid: 4b27026fd16b4b34ba2ea0a7f02b656e, type: 3}
       propertyPath: m_LocalPosition.y
@@ -874,7 +878,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5688008259686262031, guid: 4b27026fd16b4b34ba2ea0a7f02b656e, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7753590485555295387, guid: 4b27026fd16b4b34ba2ea0a7f02b656e, type: 3}
       propertyPath: m_Name
@@ -1148,7 +1152,7 @@ GameObject:
   - component: {fileID: 756275231}
   m_Layer: 0
   m_Name: Waypoint (3)
-  m_TagString: Turn
+  m_TagString: Waypoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1160,14 +1164,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 756275229}
-  m_LocalRotation: {x: -0, y: -0.38268274, z: -0, w: 0.9238798}
-  m_LocalPosition: {x: 104.4, y: 5, z: 66.6}
+  m_LocalRotation: {x: -0, y: 0.0000004768371, z: -0, w: 1}
+  m_LocalPosition: {x: 105.763916, y: 5, z: 61.418095}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 405365727}
   m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 0, y: -45, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &756275231
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1180,7 +1184,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 15.8498, y: 7.0539665, z: 3}
-  m_Center: {x: 0.17168808, y: 1.2, z: 0}
+  m_Center: {x: 0.17168808, y: 3, z: 0}
 --- !u!1001 &771624873
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1852,6 +1856,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Road
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4e3a71f0f022ded4ea1265ca4d44b679, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 4e3a71f0f022ded4ea1265ca4d44b679, type: 3}
@@ -1903,7 +1911,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1240323619
 Transform:
   m_ObjectHideFlags: 0
@@ -2659,6 +2667,10 @@ PrefabInstance:
     serializedVersion: 2
     m_TransformParent: {fileID: 1009498029}
     m_Modifications:
+    - target: {fileID: 3715488756733801776, guid: b3c589f47b0d2244e9f7b40d747bba54, type: 3}
+      propertyPath: m_Convex
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3754498144716390286, guid: b3c589f47b0d2244e9f7b40d747bba54, type: 3}
       propertyPath: m_RootOrder
       value: -1
@@ -2706,6 +2718,14 @@ PrefabInstance:
     - target: {fileID: 4562560419710805300, guid: b3c589f47b0d2244e9f7b40d747bba54, type: 3}
       propertyPath: m_Name
       value: Establecimiento (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4562560419710805300, guid: b3c589f47b0d2244e9f7b40d747bba54, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4562560419710805300, guid: b3c589f47b0d2244e9f7b40d747bba54, type: 3}
+      propertyPath: m_TagString
+      value: Building
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
@@ -2916,6 +2936,10 @@ PrefabInstance:
     - target: {fileID: 192867146037634564, guid: 9756fdd68d18a9f4d9a1f0ec939add73, type: 3}
       propertyPath: m_Name
       value: Establecimiento (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 192867146037634564, guid: 9756fdd68d18a9f4d9a1f0ec939add73, type: 3}
+      propertyPath: m_TagString
+      value: Building
       objectReference: {fileID: 0}
     - target: {fileID: 713507220303314110, guid: 9756fdd68d18a9f4d9a1f0ec939add73, type: 3}
       propertyPath: m_RootOrder
@@ -3174,7 +3198,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1933541398}
   m_LocalRotation: {x: -0, y: -0.000000014901159, z: 0.25881907, w: 0.9659258}
-  m_LocalPosition: {x: -17.72, y: -6.46, z: -0.000086545944}
+  m_LocalPosition: {x: -21.72, y: 0.46820402, z: -0.000086545944}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3890,11 +3914,11 @@ PrefabInstance:
       objectReference: {fileID: 405365727}
     - target: {fileID: 2280089175653934859, guid: e3e80a22c091e6d4d8e3f8b6d6a0ef73, type: 3}
       propertyPath: maxSpeed
-      value: 1000
+      value: 600
       objectReference: {fileID: 0}
     - target: {fileID: 2280089175653934859, guid: e3e80a22c091e6d4d8e3f8b6d6a0ef73, type: 3}
       propertyPath: sensorLength
-      value: 150
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2280089175653934859, guid: e3e80a22c091e6d4d8e3f8b6d6a0ef73, type: 3}
       propertyPath: brakeDistance
@@ -3902,11 +3926,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2280089175653934859, guid: e3e80a22c091e6d4d8e3f8b6d6a0ef73, type: 3}
       propertyPath: maxBrakeTorque
-      value: 4500
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 2280089175653934859, guid: e3e80a22c091e6d4d8e3f8b6d6a0ef73, type: 3}
       propertyPath: maxMotorTorque
-      value: 3000
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 2280089175653934859, guid: e3e80a22c091e6d4d8e3f8b6d6a0ef73, type: 3}
       propertyPath: frontSensorPosition.z
@@ -4006,6 +4030,10 @@ PrefabInstance:
       propertyPath: m_Center.z
       value: -6.1690707
       objectReference: {fileID: 0}
+    - target: {fileID: 919132148936701243, guid: b4a7e008a4d3fbd408bd62b5d9f9ae01, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2608918596502755855, guid: b4a7e008a4d3fbd408bd62b5d9f9ae01, type: 3}
       propertyPath: m_Name
       value: "CurvaSe\xF1al"
@@ -4054,7 +4082,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 919132148936701243, guid: b4a7e008a4d3fbd408bd62b5d9f9ae01, type: 3}
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: b4a7e008a4d3fbd408bd62b5d9f9ae01, type: 3}
 --- !u!54 &3469287837606341601
@@ -4129,6 +4158,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Establecimiento
       objectReference: {fileID: 0}
+    - target: {fileID: 4562560419710805300, guid: b3c589f47b0d2244e9f7b40d747bba54, type: 3}
+      propertyPath: m_TagString
+      value: Building
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: b3c589f47b0d2244e9f7b40d747bba54, type: 3}
@@ -4187,6 +4220,10 @@ PrefabInstance:
     - target: {fileID: 5609551433719147146, guid: 07879448ac6afe74c8fdd9c603fba563, type: 3}
       propertyPath: m_Name
       value: Comisaria
+      objectReference: {fileID: 0}
+    - target: {fileID: 5609551433719147146, guid: 07879448ac6afe74c8fdd9c603fba563, type: 3}
+      propertyPath: m_TagString
+      value: Building
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
@@ -4265,7 +4302,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5688008259686262031, guid: 4b27026fd16b4b34ba2ea0a7f02b656e, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
@@ -4344,7 +4381,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8214533614997699871, guid: f7288dae21b664e4989a0290f43c02fe, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8841747358476740517, guid: f7288dae21b664e4989a0290f43c02fe, type: 3}
       propertyPath: m_RootOrder

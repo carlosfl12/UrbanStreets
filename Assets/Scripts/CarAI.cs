@@ -61,13 +61,12 @@ public class CarAI : MonoBehaviour
         sensorStarPose += transform.up * frontSensorPosition.y;
         float avoidMultiplier = 0;
         isTurning = false;
-        Debug.DrawRay(transform.position, transform.forward, Color.blue);
 
         //Sensores derecha
         sensorStarPose += transform.right * frontSideSensorPosition;
         if (Physics.Raycast(sensorStarPose, transform.forward, out hit, sensorLength)) {
             if (hit.rigidbody) {
-                Debug.DrawLine(sensorStarPose, hit.point);
+                Debug.DrawLine(sensorStarPose, hit.point, Color.yellow);
                 isTurning = true;
                 avoidMultiplier -= 1f;
             }
@@ -85,7 +84,7 @@ public class CarAI : MonoBehaviour
         sensorStarPose -= transform.right * frontSideSensorPosition * 2;
         if (Physics.Raycast(sensorStarPose, transform.forward, out hit, sensorLength)) {
             if (hit.rigidbody) {
-                Debug.DrawLine(sensorStarPose, hit.point);
+                Debug.DrawLine(sensorStarPose, hit.point, Color.red);
                 isTurning = true;
                 avoidMultiplier += 1f;
             }
@@ -100,25 +99,28 @@ public class CarAI : MonoBehaviour
         }
 
         // Sensor central
-        Debug.Log(avoidMultiplier);
         if (avoidMultiplier == 0) {
-            if (Physics.Raycast(sensorStarPose, transform.forward, out hit, sensorLength * 100)) {
-                if (hit.rigidbody != null) {
-                    if (!hit.rigidbody.CompareTag("Racer")) {
-                        isBraking = true;
-                        Debug.DrawLine(sensorStarPose, hit.point);
-                        isTurning = true;
-                        if (hit.normal.x < 0) {
-                            avoidMultiplier = -1;
-                        } else {
-                            avoidMultiplier = 1;
-                        }
+            if (Physics.Raycast(sensorStarPose, transform.forward, out hit, sensorLength)) {
+                if (hit.rigidbody) {
+                    isTurning = true;
+                    if (hit.normal.x < 0) {
+                        avoidMultiplier = -1;
                     } else {
-                        isBraking = false;
+                        avoidMultiplier = 1;
                     }
                 }
             }
         }
+
+        // if (Physics.Raycast(sensorStarPose, transform.forward, out hit, sensorLength * 10)) {
+        //         if ((hit.collider.gameObject.CompareTag("Building") && currentSpeed > 100)) {
+        //             Debug.Log(hit.collider.name);
+        //             Debug.DrawLine(sensorStarPose, hit.point, Color.black);
+        //             isBraking = true;
+        //         } else {
+        //             isBraking = false;
+        //         }
+        //     }
        
         if (isTurning) {
             targetSteerAngle = maxSteerAngle * avoidMultiplier;
@@ -179,20 +181,6 @@ public class CarAI : MonoBehaviour
         } else {
             wheelFrontRight.brakeTorque = 0;
             wheelFrontLeft.brakeTorque = 0;
-        }
-    }
-
-    private void OnTriggerStay(Collider other) {
-        if (other.CompareTag("Curva") && (currentSpeed > 50)) {
-            // Debug.Log("Frena");
-            // isBraking = true;
-            // Braking();
-        }
-    }
-
-    private void OnTriggerExit(Collider other) {
-        if (other.CompareTag("Curva")) {
-            isBraking = false;
         }
     }
 
