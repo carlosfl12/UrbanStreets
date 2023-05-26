@@ -14,9 +14,10 @@ GameObject:
   - component: {fileID: 2280089175653934858}
   - component: {fileID: 2280089175653934869}
   - component: {fileID: 2280089175653934859}
+  - component: {fileID: 5734174524523892628}
   m_Layer: 0
   m_Name: F1
-  m_TagString: Untagged
+  m_TagString: Racer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -39,7 +40,7 @@ Transform:
   - {fileID: 8416423622672767937}
   - {fileID: 2280089175857181407}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3423267804791607128
 MeshFilter:
@@ -155,6 +156,30 @@ MonoBehaviour:
   frontSensorAngle: 30
   isTurning: 0
   targetSteerAngle: 0
+--- !u!114 &5734174524523892628
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1397779272690424391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94f1ba37f7905744ea4ff0f1deeec64d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  frontRight: {fileID: 2280089174731642963}
+  frontLeft: {fileID: 2280089175131627091}
+  backRight: {fileID: 2280089174993640687}
+  backLeft: {fileID: 2280089174465081478}
+  frontRightTransform: {fileID: 8416423622672767937}
+  frontLeftTransform: {fileID: 5103916441226369164}
+  backRightTransform: {fileID: 2262568465198906420}
+  backLeftTransform: {fileID: 7944804562693443324}
+  acceleration: 3000
+  breackingForce: 5000
+  maxTurnAngle: 15
+  currentAcceleration: 0
 --- !u!1 &2280089174465081472
 GameObject:
   m_ObjectHideFlags: 0

@@ -440,7 +440,7 @@ GameObject:
   - component: {fileID: 5493246190926570490}
   m_Layer: 0
   m_Name: Car
-  m_TagString: Untagged
+  m_TagString: Racer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -623,12 +623,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   path: {fileID: 0}
   maxSteerAngle: 45
+  isOvertaking: 0
   wheelFrontLeft: {fileID: 7120391028959570851}
   wheelFrontRight: {fileID: 3921277991780961342}
   nodes: []
   currentNode: 0
   maxMotorTorque: 1000
+  maxBrakeTorque: 150
   currentSpeed: 0
+  turnSpeed: 5
   maxSpeed: 10000
   colors:
   - {fileID: 2100000, guid: a35753523af1b8349b675ccc01c029ee, type: 2}
@@ -637,6 +640,15 @@ MonoBehaviour:
   - {fileID: 2100000, guid: e6f7525c56793c0499b61a933178a625, type: 2}
   - {fileID: 2100000, guid: 7ec0e3f38f9730144a499642507e76a4, type: 2}
   - {fileID: 2100000, guid: 7213f39b99c7a1443bfeed285b2b1aad, type: 2}
+  isBraking: 0
+  approachAngleThreshold: 10
+  isApproachingCurve: 0
+  sensorLength: 3
+  frontSensorPosition: {x: 0, y: 0.2, z: 0.5}
+  frontSideSensorPosition: 0.2
+  frontSensorAngle: 30
+  isTurning: 0
+  targetSteerAngle: 0
 --- !u!1 &3697319870651848022
 GameObject:
   m_ObjectHideFlags: 0

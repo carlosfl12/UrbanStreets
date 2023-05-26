@@ -20,8 +20,6 @@ public class CarAI : MonoBehaviour
 
     [Header("Braking Options")]
     public bool isBraking = false;
-    public float approachAngleThreshold = 10f;
-    public bool isApproachingCurve = false;
 
     [Header("Sensors")]
     public float sensorLength = 3f;
@@ -50,10 +48,10 @@ public class CarAI : MonoBehaviour
     private void FixedUpdate() {
         Sensors();
         Drive();
-        ApplySteer();
-        ChangeWaypoint();
+        ApplySteer(nodes[currentNode].position);
         Braking();
         LerpToSteerAngle();
+        // Debug.Log(CalculateDistanceToCurve());
     }
 
     public void Sensors() {
@@ -63,6 +61,7 @@ public class CarAI : MonoBehaviour
         sensorStarPose += transform.up * frontSensorPosition.y;
         float avoidMultiplier = 0;
         isTurning = false;
+        Debug.DrawRay(transform.position, transform.forward, Color.blue);
 
         //Sensores derecha
         sensorStarPose += transform.right * frontSideSensorPosition;
@@ -101,15 +100,21 @@ public class CarAI : MonoBehaviour
         }
 
         // Sensor central
+        Debug.Log(avoidMultiplier);
         if (avoidMultiplier == 0) {
-            if (Physics.Raycast(sensorStarPose, transform.forward, out hit, sensorLength)) {
-                if (hit.rigidbody) {
-                    Debug.DrawLine(sensorStarPose, hit.point);
-                    isTurning = true;
-                    if (hit.normal.x < 0) {
-                        avoidMultiplier = -1;
+            if (Physics.Raycast(sensorStarPose, transform.forward, out hit, sensorLength * 100)) {
+                if (hit.rigidbody != null) {
+                    if (!hit.rigidbody.CompareTag("Racer")) {
+                        isBraking = true;
+                        Debug.DrawLine(sensorStarPose, hit.point);
+                        isTurning = true;
+                        if (hit.normal.x < 0) {
+                            avoidMultiplier = -1;
+                        } else {
+                            avoidMultiplier = 1;
+                        }
                     } else {
-                        avoidMultiplier = 1;
+                        isBraking = false;
                     }
                 }
             }
@@ -136,44 +141,69 @@ public class CarAI : MonoBehaviour
         }
     }
 
-    void ApplySteer() {
+    public void ApplySteer(Vector3 pos) {
         if (isTurning) {
             return;
         }
-        Vector3 relativeVector = transform.InverseTransformPoint(nodes[currentNode].position);
+        Vector3 relativeVector = transform.InverseTransformPoint(pos);
         float newSteer = (relativeVector.x / relativeVector.magnitude) * maxSteerAngle;
         targetSteerAngle = newSteer;
     }
 
-    void ChangeWaypoint() {
-        // Vector3 currentWaypointDir = nodes[currentNode].position - transform.position;
-        // Vector3 nextWaypointDir = nodes[currentNode + 1].position - transform.position;
-
-        // float angle = Vector3.Angle(currentWaypointDir, nextWaypointDir);
-        // Debug.Log(angle);
-
-        // if (angle > approachAngleThreshold)
-        // {
-        //     isBraking = true;
-        // }
-        // else
-        // {
-        //     isBraking = false;
-        // }
-
-        if (Vector3.Distance(transform.position, nodes[currentNode].position) < 3f) {
-            currentNode++;
-        }
+    public void ChangeWaypoint() {
+        currentNode++;
         currentNode = (currentNode++)%nodes.Count;
     }
+
+    public float CalculateDistanceToCurve() {
+        GameObject[] turnCheckpoints = GameObject.FindGameObjectsWithTag("Turn");
+
+        float minDIstance = float.MaxValue;
+
+        foreach (GameObject checkpoint in turnCheckpoints) {
+            Vector3 checkpointPosition = checkpoint.transform.position;
+
+            float distance = Vector3.Distance(transform.position, checkpointPosition);
+
+            if (distance < minDIstance) {
+                minDIstance = distance;
+            }
+        }
+        return minDIstance;
+    }
     
-    void Braking() {
+    public void Braking() {
         if (isBraking) {
             wheelFrontRight.brakeTorque = maxBrakeTorque;
             wheelFrontLeft.brakeTorque = maxBrakeTorque;
         } else {
             wheelFrontRight.brakeTorque = 0;
             wheelFrontLeft.brakeTorque = 0;
+        }
+    }
+
+    private void OnTriggerStay(Collider other) {
+        if (other.CompareTag("Curva") && (currentSpeed > 50)) {
+            // Debug.Log("Frena");
+            // isBraking = true;
+            // Braking();
+        }
+    }
+
+    private void OnTriggerExit(Collider other) {
+        if (other.CompareTag("Curva")) {
+            isBraking = false;
+        }
+    }
+
+
+     private void OnTriggerEnter(Collider other) {
+        if (other.CompareTag("Waypoint")) {
+            ChangeWaypoint();
+        }
+
+        if (other.CompareTag("Radar")) {
+            GameManager.sharedInstance.callThePolice = true;
         }
     }
 }
