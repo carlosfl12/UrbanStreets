@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CarAI : MonoBehaviour
 {
+    public bool canDoALap;
+    public int currentLap = 1;
     public Transform path;
     public float maxSteerAngle = 45f;
     public bool isOvertaking = false;
@@ -218,16 +220,24 @@ public class CarAI : MonoBehaviour
 
         if (other.CompareTag("Radar")) {
             GameManager.sharedInstance.callThePolice = true;
+            canDoALap = true;
         }
 
         if (other.CompareTag("Overtake")) {
             maxSpeed += 50f;
         }
+
+        if (other.CompareTag("Finish")) {
+            canDoALap = false;
+            currentLap++;
+            if (currentLap >= 4) {
+                // Final
+            }
+        }
     }
 
     private void OnTriggerExit(Collider other) {
         if (other.CompareTag("Overtake")) {
-            Debug.Log("Entra en el trigger exit");
             maxSpeed = fixedMaxSpeed;
         }
     }

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class WheelsController : MonoBehaviour
 {
+    public bool canDoALap;
+    public int currentLap = 1;
     [SerializeField] WheelCollider frontRight;
     [SerializeField] WheelCollider frontLeft;
     [SerializeField] WheelCollider backRight;
@@ -74,6 +76,16 @@ public class WheelsController : MonoBehaviour
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Radar")) {
             GameManager.sharedInstance.callThePolice = true;
+            canDoALap = true;
+        }
+
+        if (other.CompareTag("Finish") && canDoALap) {
+            canDoALap = false;
+            currentLap++;
+
+            if ( currentLap >= 4) {
+                //Final
+            }
         }
     }
 }
