@@ -9,9 +9,15 @@ public class PoliceAI : CarAI
     public Transform nearestWaypoint;
     public GameObject[] racers;
     public GameObject target;
+
+    [Header("Distance")]
+    public float distanceToWaypoint;
+    public float distanceToTarget;
+
     // Start is called before the first frame update
     void Start()
     {
+        fixedMaxSpeed = maxSpeed;
         Transform[] pathTransform = path.GetComponentsInChildren<Transform>();
         nodes = new List<Transform>();
         for (int i = 0; i < pathTransform.Length; i++)
@@ -27,6 +33,9 @@ public class PoliceAI : CarAI
     // Update is called once per frame
     void Update()
     {
+        if (!GameManager.sharedInstance.callThePolice) {
+            return;
+        }
         GetClosestWaypoint();
         if (GameManager.sharedInstance.callThePolice) {
             foreach (GameObject light in lights) {
@@ -34,37 +43,49 @@ public class PoliceAI : CarAI
             }
         }
         Sensors();
+        target = GetClosestRacer();
+
         Drive();
-        ApplySteer(nearestWaypoint.position);
+        if (distanceToWaypoint < distanceToTarget) {
+            ApplySteer(nearestWaypoint.position);
+        } else {
+            ApplySteer(target.transform.position);
+        }
         Braking();
         LerpToSteerAngle();
-        target = GetClosestRacer();
         
     }
 
 
     void GetClosestWaypoint() {
-        if (nearestWaypoint == null) {
-            float maxDistance = Mathf.Infinity;
-            foreach (Transform waypoint in path) {
-                float distance = Vector3.Distance(transform.position, waypoint.position);
-                if (distance < maxDistance) {
-                    maxDistance = distance;
-                    nearestWaypoint = waypoint;
-                }
+        float maxDistance = Mathf.Infinity;
+        foreach (Transform waypoint in path) {
+            float distance = Vector3.Distance(transform.position, waypoint.position);
+            if (distance < maxDistance) {
+                maxDistance = distance;
+                distanceToWaypoint = distance;
+                nearestWaypoint = waypoint;
             }
         }
     }
 
     GameObject GetClosestRacer() {
-        float maxDistance = Mathf.Infinity;
-        foreach (GameObject racer in racers) {
-            float distance = Vector3.Distance(transform.position, racer.transform.position);
-            if (distance < maxDistance) {
-                maxDistance = distance;
-                return racer;
+        GameObject closestRacer = null;
+        float closestDistance = Mathf.Infinity;
+        Vector3 currentPosition = transform.position;
+
+        foreach (GameObject racer in racers)
+        {
+            float distance = Vector3.Distance(racer.transform.position, currentPosition);
+
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                distanceToTarget = closestDistance;
+                closestRacer = racer;
             }
         }
-        return null;
+
+        return closestRacer;
     }
 }

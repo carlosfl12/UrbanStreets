@@ -70,4 +70,10 @@ public class WheelsController : MonoBehaviour
         trans.position = position;
         trans.rotation = rotation;
     }
+
+    private void OnTriggerEnter(Collider other) {
+        if (other.CompareTag("Radar")) {
+            GameManager.sharedInstance.callThePolice = true;
+        }
+    }
 }

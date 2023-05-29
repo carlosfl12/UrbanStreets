@@ -16,6 +16,7 @@ public class CarAI : MonoBehaviour
     public float currentSpeed;
     public float turnSpeed = 5;
     public float maxSpeed = 100f;
+    public float fixedMaxSpeed;
     public Material[] colors;
 
     [Header("Braking Options")]
@@ -28,10 +29,16 @@ public class CarAI : MonoBehaviour
     public float frontSensorAngle = 30f;
     public bool isTurning = false;
     public float targetSteerAngle = 0;
+    
+
+    [Header("Overtake")]
+    public float overtakeTime;
+    public GameObject overtakePrefab;
 
 
     private void Start()
     {
+        fixedMaxSpeed = maxSpeed;
         MeshRenderer mesh = GetComponent<MeshRenderer>();
         mesh.material = colors[Random.Range(0, colors.Length)];
         Transform[] pathTransform = path.GetComponentsInChildren<Transform>();
@@ -46,14 +53,27 @@ public class CarAI : MonoBehaviour
     }
 
     private void FixedUpdate() {
+        if (gameObject.CompareTag("Police") && !GameManager.sharedInstance.callThePolice) {
+            return;
+        }
         Sensors();
+        ChangeWaypoint();
         Drive();
         ApplySteer(nodes[currentNode].position);
         Braking();
         LerpToSteerAngle();
-        // Debug.Log(CalculateDistanceToCurve());
+        overtakeTime += 1 * Time.deltaTime;
+        if (overtakeTime > 1.5) {
+            overtakeTime = 0;
+            OvertakeSpawn();
+        }
     }
 
+    public void OvertakeSpawn() {
+        GameObject overtakeGO = Instantiate(overtakePrefab, new Vector3(transform.position.x , transform.position.y, transform.position.z - 3.25f), transform.rotation);
+        
+        Destroy(overtakeGO, 2f);
+    }
     public void Sensors() {
         RaycastHit hit;
         Vector3 sensorStarPose = transform.position + frontSensorPosition;
@@ -112,16 +132,20 @@ public class CarAI : MonoBehaviour
             }
         }
 
-        // if (Physics.Raycast(sensorStarPose, transform.forward, out hit, sensorLength * 10)) {
-        //         if ((hit.collider.gameObject.CompareTag("Building") && currentSpeed > 100)) {
-        //             Debug.Log(hit.collider.name);
-        //             Debug.DrawLine(sensorStarPose, hit.point, Color.black);
-        //             isBraking = true;
-        //         } else {
-        //             isBraking = false;
-        //         }
-        //     }
+        if (Physics.Raycast(sensorStarPose, transform.forward, out hit, sensorLength * 10)) {
+                if ((hit.collider.gameObject.CompareTag("Building") && currentSpeed > 100)) {
+                    // Debug.Log(hit.collider.name);
+                    Debug.DrawLine(sensorStarPose, hit.point, Color.black);
+                    isBraking = true;
+                }
+                
+            }
        
+       //TODO:
+       //Arreglar los waypoints del F1 que estan un poco mal pero la IA en general ya esta bien
+        if((currentSpeed < maxSpeed / 2) && isBraking) {
+            isBraking = false;
+        }
         if (isTurning) {
             targetSteerAngle = maxSteerAngle * avoidMultiplier;
         }
@@ -153,7 +177,9 @@ public class CarAI : MonoBehaviour
     }
 
     public void ChangeWaypoint() {
-        currentNode++;
+        if (Vector3.Distance(transform.position, nodes[currentNode].transform.position) < 4f) {
+            currentNode++;
+        }
         currentNode = (currentNode++)%nodes.Count;
     }
 
@@ -186,12 +212,23 @@ public class CarAI : MonoBehaviour
 
 
      private void OnTriggerEnter(Collider other) {
-        if (other.CompareTag("Waypoint")) {
-            ChangeWaypoint();
-        }
+        // if (other.CompareTag("Waypoint")) {
+        //     ChangeWaypoint();
+        // }
 
         if (other.CompareTag("Radar")) {
             GameManager.sharedInstance.callThePolice = true;
+        }
+
+        if (other.CompareTag("Overtake")) {
+            maxSpeed += 50f;
+        }
+    }
+
+    private void OnTriggerExit(Collider other) {
+        if (other.CompareTag("Overtake")) {
+            Debug.Log("Entra en el trigger exit");
+            maxSpeed = fixedMaxSpeed;
         }
     }
 }
