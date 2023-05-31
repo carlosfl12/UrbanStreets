@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 2280089175653934858}
   - component: {fileID: 2280089175653934869}
   - component: {fileID: 2280089175653934859}
-  - component: {fileID: 5734174524523892628}
   m_Layer: 0
   m_Name: F1
   m_TagString: Racer
@@ -29,7 +28,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1397779272690424391}
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 77.60749, y: 0.51, z: -41.14}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -40,7 +39,7 @@ Transform:
   - {fileID: 8416423622672767937}
   - {fileID: 2280089175857181407}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 22
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3423267804791607128
 MeshFilter:
@@ -133,6 +132,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d150f9a3597af874db217ef99c26c277, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rb: {fileID: 0}
+  canDoALap: 0
+  currentLap: 1
   path: {fileID: 0}
   maxSteerAngle: 45
   isOvertaking: 0
@@ -140,46 +142,34 @@ MonoBehaviour:
   wheelFrontRight: {fileID: 2280089174731642963}
   nodes: []
   currentNode: 0
-  maxMotorTorque: 80
-  maxBrakeTorque: 150
+  maxMotorTorque: 1000
+  maxBrakeTorque: 1500
   currentSpeed: 0
   turnSpeed: 5
-  maxSpeed: 100
+  maxSpeed: 600
+  fixedMaxSpeed: 0
   colors:
   - {fileID: 2100000, guid: a35753523af1b8349b675ccc01c029ee, type: 2}
+  - {fileID: 2100000, guid: 7213f39b99c7a1443bfeed285b2b1aad, type: 2}
+  - {fileID: 2100000, guid: bcd390ea05a611a408a2fa4f80432816, type: 2}
+  - {fileID: 2100000, guid: 34bd113dab62e8e47b1bbd94e0e0c7bc, type: 2}
+  - {fileID: 2100000, guid: c1754f15cbcbc274aa537d4792815fb4, type: 2}
+  - {fileID: 2100000, guid: e6f7525c56793c0499b61a933178a625, type: 2}
+  - {fileID: 2100000, guid: 825e839ba0d57a74c841a49a887dbc1f, type: 2}
+  - {fileID: 2100000, guid: 7ec0e3f38f9730144a499642507e76a4, type: 2}
   isBraking: 0
-  approachAngleThreshold: 10
-  isApproachingCurve: 0
-  sensorLength: 3
+  sensorLength: 5
   frontSensorPosition: {x: 0, y: 0.2, z: 0.5}
   frontSideSensorPosition: 0.2
   frontSensorAngle: 30
   isTurning: 0
   targetSteerAngle: 0
---- !u!114 &5734174524523892628
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1397779272690424391}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 94f1ba37f7905744ea4ff0f1deeec64d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  frontRight: {fileID: 2280089174731642963}
-  frontLeft: {fileID: 2280089175131627091}
-  backRight: {fileID: 2280089174993640687}
-  backLeft: {fileID: 2280089174465081478}
-  frontRightTransform: {fileID: 8416423622672767937}
-  frontLeftTransform: {fileID: 5103916441226369164}
-  backRightTransform: {fileID: 2262568465198906420}
-  backLeftTransform: {fileID: 7944804562693443324}
-  acceleration: 3000
-  breackingForce: 5000
-  maxTurnAngle: 15
-  currentAcceleration: 0
+  overtakeTime: 0
+  overtakePrefab: {fileID: 1745715547568367155, guid: d2083b52fcd47f54eb288c62fa8891f4, type: 3}
+  intercepted: 0
+  interceptedTime: 0
+  policeDepartment: {x: 0, y: 0, z: 0}
+  lastPositionTimer: 0
 --- !u!1 &2280089174465081472
 GameObject:
   m_ObjectHideFlags: 0

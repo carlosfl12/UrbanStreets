@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CarAI : MonoBehaviour
 {
+    public Rigidbody rb;
     public bool canDoALap;
     public int currentLap = 1;
     public Transform path;
@@ -36,10 +37,18 @@ public class CarAI : MonoBehaviour
     [Header("Overtake")]
     public float overtakeTime;
     public GameObject overtakePrefab;
+    public bool intercepted;
+    [SerializeField] private float interceptedTime;
+    [SerializeField] private Vector3 policeDepartment;
+
+    [Header("Last Position")]
+    public float lastPositionTimer;
 
 
     private void Start()
     {
+        rb = GetComponent<Rigidbody>();
+        policeDepartment = new Vector3(-53, 0.75f, -185);
         fixedMaxSpeed = maxSpeed;
         MeshRenderer mesh = GetComponent<MeshRenderer>();
         mesh.material = colors[Random.Range(0, colors.Length)];
@@ -58,6 +67,18 @@ public class CarAI : MonoBehaviour
         if (gameObject.CompareTag("Police") && !GameManager.sharedInstance.callThePolice) {
             return;
         }
+        if (interceptedTime >= 5f) {
+            intercepted = true;
+        }
+        if (intercepted) {
+            rb.constraints = RigidbodyConstraints.FreezeAll;
+            transform.position = policeDepartment;
+            return;
+        }
+
+        if (gameObject.transform.eulerAngles.z > 89 || gameObject.transform.eulerAngles.z > -89) {
+            gameObject.transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, 0f);
+        }
         Sensors();
         ChangeWaypoint();
         Drive();
@@ -69,8 +90,26 @@ public class CarAI : MonoBehaviour
             overtakeTime = 0;
             OvertakeSpawn();
         }
+
+        if (Vector3.Distance(transform.position, nodes[currentNode].position) > 25) {
+            CheckIfCantMove();
+        }
     }
 
+    public void CheckIfCantMove(){
+        lastPositionTimer += 1 * Time.deltaTime;
+        
+        if (lastPositionTimer >= 10f) {
+            if (currentNode - 1 <= 0) {
+                transform.position = nodes[0].position;
+            } else {
+                transform.position = nodes[currentNode - 1].position;
+
+            }
+            lastPositionTimer = 0;
+        }
+
+    }
     public void OvertakeSpawn() {
         GameObject overtakeGO = Instantiate(overtakePrefab, new Vector3(transform.position.x , transform.position.y, transform.position.z - 3.25f), transform.rotation);
         
@@ -139,12 +178,18 @@ public class CarAI : MonoBehaviour
                     // Debug.Log(hit.collider.name);
                     Debug.DrawLine(sensorStarPose, hit.point, Color.black);
                     isBraking = true;
-                }
-                
+                } 
             }
+
+        if (Physics.Raycast(sensorStarPose + Vector3.up * 5, transform.forward, out hit, sensorLength * 10)) {
+                if ((hit.collider.gameObject.CompareTag("Building") && currentSpeed > 100)) {
+                    // Debug.Log(hit.collider.name);
+                    Debug.DrawLine(sensorStarPose + Vector3.up * 5, hit.point, Color.black);
+                    isBraking = true;
+                } 
+        }
        
-       //TODO:
-       //Arreglar los waypoints del F1 que estan un poco mal pero la IA en general ya esta bien
+       
         if((currentSpeed < maxSpeed / 2) && isBraking) {
             isBraking = false;
         }
@@ -179,8 +224,9 @@ public class CarAI : MonoBehaviour
     }
 
     public void ChangeWaypoint() {
-        if (Vector3.Distance(transform.position, nodes[currentNode].transform.position) < 4f) {
+        if (Vector3.Distance(transform.position, nodes[currentNode].transform.position) < 8f) {
             currentNode++;
+            lastPositionTimer = 0;
         }
         currentNode = (currentNode++)%nodes.Count;
     }
@@ -212,11 +258,12 @@ public class CarAI : MonoBehaviour
         }
     }
 
-
+    private void OnCollisionStay(Collision other) {
+        if (other.gameObject.CompareTag("Police")) {
+            interceptedTime += 1 * Time.deltaTime;
+        }
+    }
      private void OnTriggerEnter(Collider other) {
-        // if (other.CompareTag("Waypoint")) {
-        //     ChangeWaypoint();
-        // }
 
         if (other.CompareTag("Radar")) {
             GameManager.sharedInstance.callThePolice = true;
@@ -233,6 +280,10 @@ public class CarAI : MonoBehaviour
             if (currentLap >= 4) {
                 // Final
             }
+        }
+
+        if (other.CompareTag("Decoration") || other.CompareTag("Building")) {
+            lastPositionTimer += 1 * Time.deltaTime;
         }
     }
 

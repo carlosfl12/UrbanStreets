@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using Cinemachine;
 public class WheelsController : MonoBehaviour
 {
+    public CinemachineVirtualCamera CM;
     public bool canDoALap;
     public int currentLap = 1;
     [SerializeField] WheelCollider frontRight;
@@ -23,11 +26,17 @@ public class WheelsController : MonoBehaviour
     public float currentAcceleration = 0f;
     private float currentBreackForce = 0f;
     private float currentTurnAngle = 0f;
-
+    public float currentInput;
+    public Slider policeSlider;
+    public float interceptedTime;
+    public bool hasBeenIntercepted;
     // Start is called before the first frame update
     void Start()
     {
-        
+        policeSlider = GameObject.FindGameObjectWithTag("Slider").GetComponent<Slider>();
+        CM = GameObject.FindGameObjectWithTag("CM").GetComponent<CinemachineVirtualCamera>();
+        CM.Follow = transform;
+        CM.LookAt = transform;
     }
 
     // Update is called once per frame
@@ -37,9 +46,10 @@ public class WheelsController : MonoBehaviour
     }
 
     private void FixedUpdate() {
-        currentAcceleration = acceleration * Input.GetAxis("Vertical");
+        currentInput = Input.GetAxis("Vertical") * 1;
+        currentAcceleration = acceleration * currentInput;
         
-        if (Input.GetKey(KeyCode.Space)) {
+        if (Input.GetAxis("Brake") < 0) {
             currentBreackForce = breackingForce;
         } else {
             currentBreackForce = 0f;
@@ -62,6 +72,14 @@ public class WheelsController : MonoBehaviour
         UpdateWheel(frontRight, frontRightTransform);
         UpdateWheel(backLeft, backLeftTransform);
         UpdateWheel(backRight, backRightTransform);
+
+        if (interceptedTime >= 5) {
+            hasBeenIntercepted = true;
+        }
+
+        if (hasBeenIntercepted) {
+            SceneManager.LoadScene("PoliceIntercepted");
+        }
     }
 
     void UpdateWheel(WheelCollider col, Transform trans) {
@@ -73,6 +91,12 @@ public class WheelsController : MonoBehaviour
         trans.rotation = rotation;
     }
 
+    private void OnCollisionStay(Collision other) {
+        if (other.gameObject.CompareTag("Police")) {
+            interceptedTime += 1 * Time.deltaTime;
+        }
+        policeSlider.value = interceptedTime;
+    }
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Radar")) {
             GameManager.sharedInstance.callThePolice = true;

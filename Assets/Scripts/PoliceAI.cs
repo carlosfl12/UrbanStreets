@@ -13,6 +13,7 @@ public class PoliceAI : CarAI
     [Header("Distance")]
     public float distanceToWaypoint;
     public float distanceToTarget;
+    public bool hasTarget;
 
     // Start is called before the first frame update
     void Start()
@@ -46,11 +47,17 @@ public class PoliceAI : CarAI
         target = GetClosestRacer();
 
         Drive();
-        if (distanceToWaypoint < distanceToTarget) {
+        if (distanceToWaypoint < distanceToTarget && !hasTarget) {
             ApplySteer(nearestWaypoint.position);
         } else {
+            hasTarget = true;
             ApplySteer(target.transform.position);
         }
+
+        if (distanceToTarget > 20) {
+            hasTarget = false;
+        }
+
         Braking();
         LerpToSteerAngle();
         
@@ -87,5 +94,11 @@ public class PoliceAI : CarAI
         }
 
         return closestRacer;
+    }
+
+    private void OnCollisionEnter(Collision other) {
+        if (other.gameObject.CompareTag("Racer") && (!other.gameObject.GetComponent<CarAI>().intercepted || other.gameObject.GetComponent<WheelsController>().hasBeenIntercepted)) {
+            hasTarget = true;
+        }
     }
 }
