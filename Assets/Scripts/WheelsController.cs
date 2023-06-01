@@ -4,9 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Cinemachine;
+using TMPro;
+
 public class WheelsController : MonoBehaviour
 {
     public CinemachineVirtualCamera CM;
+    public Rigidbody rb;
     public bool canDoALap;
     public int currentLap = 1;
     [SerializeField] WheelCollider frontRight;
@@ -30,9 +33,16 @@ public class WheelsController : MonoBehaviour
     public Slider policeSlider;
     public float interceptedTime;
     public bool hasBeenIntercepted;
+
+    public float currentLapTime;
+    public float lapTime;
+    public float bestLapTime;
+    public TMP_Text speedText;
     // Start is called before the first frame update
     void Start()
     {
+        speedText = GameObject.FindGameObjectWithTag("Speed").GetComponent<TMP_Text>();
+        rb = GetComponent<Rigidbody>();
         policeSlider = GameObject.FindGameObjectWithTag("Slider").GetComponent<Slider>();
         CM = GameObject.FindGameObjectWithTag("CM").GetComponent<CinemachineVirtualCamera>();
         CM.Follow = transform;
@@ -42,12 +52,24 @@ public class WheelsController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetAxis("Respawn") > 0.1f) {
+            Respawn();
+        }
     }
 
+    public void Respawn() {
+        Vector3 currentRotation = transform.eulerAngles;
+
+        currentRotation.z = 0f;
+        transform.eulerAngles = currentRotation;
+    }
     private void FixedUpdate() {
-        currentInput = Input.GetAxis("Vertical") * 1;
+        if (!GameManager.sharedInstance.canStartRace) {
+            return;
+        }
+        currentInput = Input.GetAxis("Move") * 1;
         currentAcceleration = acceleration * currentInput;
+        speedText.text = ((int)(rb.velocity.magnitude * 10)).ToString();
         
         if (Input.GetAxis("Brake") < 0) {
             currentBreackForce = breackingForce;
@@ -98,17 +120,18 @@ public class WheelsController : MonoBehaviour
         policeSlider.value = interceptedTime;
     }
     private void OnTriggerEnter(Collider other) {
-        if (other.CompareTag("Radar")) {
+        if (other.gameObject.CompareTag("Radar")) {
             GameManager.sharedInstance.callThePolice = true;
             canDoALap = true;
         }
 
-        if (other.CompareTag("Finish") && canDoALap) {
+        if (other.gameObject.name == "Finish" && canDoALap) {
             canDoALap = false;
             currentLap++;
+            GameManager.sharedInstance.LapCompleted();
 
             if ( currentLap >= 4) {
-                //Final
+                SceneManager.LoadScene("Win");
             }
         }
     }

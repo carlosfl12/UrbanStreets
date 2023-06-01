@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CarAI : MonoBehaviour
 {
@@ -64,6 +65,9 @@ public class CarAI : MonoBehaviour
     }
 
     private void FixedUpdate() {
+        if (!GameManager.sharedInstance.canStartRace) {
+            return;
+        }
         if (gameObject.CompareTag("Police") && !GameManager.sharedInstance.callThePolice) {
             return;
         }
@@ -274,11 +278,11 @@ public class CarAI : MonoBehaviour
             maxSpeed += 50f;
         }
 
-        if (other.CompareTag("Finish")) {
+        if (other.gameObject.CompareTag("Finish")) {
             canDoALap = false;
             currentLap++;
             if (currentLap >= 4) {
-                // Final
+                SceneManager.LoadScene("Lose");
             }
         }
 

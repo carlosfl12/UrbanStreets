@@ -14,5 +14,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SelectCar.unity
     guid: af3892eaabebb524191bb9f527f2a201
+  - enabled: 1
+    path: Assets/Scenes/Win.unity
+    guid: 946be1303e0113f48be4876451edae3e
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 479329770caf2204b93a12f82bfdf3c9, type: 2}

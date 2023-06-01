@@ -7,6 +7,7 @@ public class PoliceAI : CarAI
     [Header("Police")]
     public GameObject[] lights;
     public Transform nearestWaypoint;
+    public AudioSource audio;
     public GameObject[] racers;
     public GameObject target;
 
@@ -42,6 +43,7 @@ public class PoliceAI : CarAI
             foreach (GameObject light in lights) {
                 light.SetActive(true);
             }
+            audio.Play();
         }
         Sensors();
         target = GetClosestRacer();

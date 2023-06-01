@@ -9,6 +9,8 @@ public class CarSelection : MonoBehaviour
     public Material[] colors;
     public TMP_Text carNameText;
     public TMP_Text colorNameText;
+    public GameObject statsF1;
+    public GameObject statsCar;
 
     public int currentCarIndex = 0;
     public int currentColorIndex = 0;
@@ -26,6 +28,13 @@ public class CarSelection : MonoBehaviour
             car.SetActive(false);
         }
         cars[currentCarIndex].SetActive(true);
+        if (cars[currentCarIndex].name + " Stats" == statsF1.name) {
+            statsF1.SetActive(true);
+            statsCar.SetActive(false);
+        } else {
+            statsF1.SetActive(false);
+            statsCar.SetActive(true);
+        }
         carNameText.text = cars[currentCarIndex].name;
     }
 

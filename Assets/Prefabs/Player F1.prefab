@@ -394,6 +394,7 @@ GameObject:
   - component: {fileID: 2724707035844723660}
   - component: {fileID: 2724707035844723667}
   - component: {fileID: 8495894203917658962}
+  - component: {fileID: 6244172748021599262}
   m_Layer: 0
   m_Name: Player F1
   m_TagString: Racer
@@ -512,6 +513,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94f1ba37f7905744ea4ff0f1deeec64d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CM: {fileID: 0}
   canDoALap: 0
   currentLap: 1
   frontRight: {fileID: 2724707034352024725}
@@ -530,6 +532,23 @@ MonoBehaviour:
   policeSlider: {fileID: 0}
   interceptedTime: 0
   hasBeenIntercepted: 0
+  currentLapTime: 0
+  lapTime: 0
+  bestLapTime: 0
+--- !u!114 &6244172748021599262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2959273204851768961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7be998c12c9630748b10c8decb8bd551, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startTime: 0
+  lapTime: 0
 --- !u!1 &7834352930471444562
 GameObject:
   m_ObjectHideFlags: 0

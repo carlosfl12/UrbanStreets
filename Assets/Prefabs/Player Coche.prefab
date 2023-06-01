@@ -526,6 +526,7 @@ GameObject:
   - component: {fileID: 5040740933342918733}
   - component: {fileID: 4035112521886357821}
   - component: {fileID: -5796095773481721473}
+  - component: {fileID: 6235699332663849565}
   m_Layer: 0
   m_Name: Player Coche
   m_TagString: Racer
@@ -581,7 +582,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2987340110848465150, guid: b352ec88b92788f4fb5f48b388c14534, type: 3}
+  - {fileID: 2100000, guid: a35753523af1b8349b675ccc01c029ee, type: 2}
   - {fileID: -3096923569255133051, guid: b352ec88b92788f4fb5f48b388c14534, type: 3}
   - {fileID: 8556262120643298411, guid: b352ec88b92788f4fb5f48b388c14534, type: 3}
   m_StaticBatchInfo:
@@ -619,7 +620,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 64
   m_CollisionDetection: 0
 --- !u!65 &4035112521886357821
 BoxCollider:
@@ -646,6 +647,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94f1ba37f7905744ea4ff0f1deeec64d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CM: {fileID: 0}
   canDoALap: 0
   currentLap: 1
   frontRight: {fileID: 2027434453426963867}
@@ -664,6 +666,23 @@ MonoBehaviour:
   policeSlider: {fileID: 0}
   interceptedTime: 0
   hasBeenIntercepted: 0
+  currentLapTime: 0
+  lapTime: 0
+  bestLapTime: 0
+--- !u!114 &6235699332663849565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5275165410438792483}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7be998c12c9630748b10c8decb8bd551, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startTime: 0
+  lapTime: 0
 --- !u!1 &6671274679023346818
 GameObject:
   m_ObjectHideFlags: 0
