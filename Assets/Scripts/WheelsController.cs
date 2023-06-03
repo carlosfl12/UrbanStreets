@@ -8,6 +8,8 @@ using TMPro;
 
 public class WheelsController : MonoBehaviour
 {
+    [Header("SpecialScene")]
+    public bool specialScene = false;
     public CinemachineVirtualCamera CM;
     public Rigidbody rb;
     public bool canDoALap;
@@ -52,6 +54,9 @@ public class WheelsController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (specialScene) {
+            SceneManager.LoadScene("SpecialScene");
+        }
         if (Input.GetAxis("Respawn") > 0.1f) {
             Respawn();
         }
